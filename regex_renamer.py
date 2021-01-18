@@ -41,17 +41,27 @@ def replace_tokens(template_text, match_obj):
 
 @Slot()
 def apply():
-    file_list = widget.origList.toPlainText().split("\n")
-    dir_path = widget.dirPath.text()
-    search_pattern = widget.searchPattern.text()
-    search_re = re.compile(search_pattern)
-    rep_pattern = widget.repPattern.text()
+    info = get_basics()
+    dir_path = info['path']
+    search_pattern = info['search']
+    rep_pattern = info['replace']
 
-    for i in file_list:
-        result = search_re.search(i)
-        if result is not None:
-            new_name = replace_tokens(rep_pattern, result)
-            os.rename(f"{dir_path}/{result.group(0)}", f"{dir_path}/{new_name}")
+    rename_files(dir_path, search_pattern, rep_pattern)
+    dir_changed(dir_path)
+    widget.renamedList.clear()
+
+
+def rename_files(dir_path, search_pattern, rep_pattern):
+    if os.path.exists(dir_path):
+        file_list = [i.name for i in os.scandir(dir_path) if i.is_file()]
+        search_re = re.compile(search_pattern)
+        for i in file_list:
+            result = search_re.search(i)
+            if result is not None:
+                new_name = replace_tokens(rep_pattern, result)
+                os.rename(f"{dir_path}/{result.group(0)}", f"{dir_path}/{new_name}")
+    else:
+        print(f'Error: "{dir_path}" does not exist!')
 
 
 @Slot()
