@@ -10,6 +10,7 @@ import os
 @Slot()
 def preview():
     search_pattern = widget.searchPattern.text()
+    search_pattern = replace_search_tokens(search_pattern)
     search_re = re.compile(search_pattern)
     rep_pattern = widget.repPattern.text()
 
@@ -28,6 +29,13 @@ def preview():
         widget.renamedList.setPlainText("No files matched search criteria!")
 
 
+def replace_search_tokens(search_pattern):
+    global tokens
+    for k, v in tokens.items():
+        search_pattern = search_pattern.replace(k, v)
+    return search_pattern
+
+
 def replace_tokens(template_text, match_obj):
     global token_re
     results = set(token_re.findall(template_text))
@@ -44,6 +52,7 @@ def apply():
     info = get_basics()
     dir_path = info['path']
     search_pattern = info['search']
+    search_pattern = replace_search_tokens(search_pattern)
     rep_pattern = info['replace']
 
     rename_files(dir_path, search_pattern, rep_pattern)
@@ -138,6 +147,7 @@ def change_preset(index):
         widget.repPattern.setText("")
 
 
+@Slot()
 def set_blank_preset():
     widget.presetBox.setCurrentText("")
     widget.searchPattern.setText("")
@@ -149,12 +159,24 @@ def init_presets():
     set_blank_preset()
 
 
+# def get_show_title(dir_path):
+#     return os.path.basename(dir_path)
+
+
 token_pattern = r"(?<!\\)\$(\d{1,})"
 token_re = re.compile(token_pattern)
 presets = dict()
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(__file__))
+    # tokens are string replacements for common regex patterns
+    with open('tokens.json', 'r') as t:
+        tokens = json.loads(t.read())
+
+    # special tokens are functions, not regex
+    special_tokens = {
+        '<title>': lambda dir_path: os.path.basename(dir_path)
+    }
     ui_filename = "main.ui"
     app = QApplication([])
     ui_file = QFile(ui_filename)

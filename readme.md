@@ -2,6 +2,7 @@
 Allows you to use regex to rename files in a directory, with dollar-number notation to insert capture groups (see screenshot below).
 
 ## Basic usage
+- Conceptually, this program uses user-supplied regex to pull specific information out of the original filename and place it into a new template string
 - If `Directory Path` exists, it will display all the files in that directory under the `File List` text box
 - It will probably be helpful to use a site like [regex101](https://regex101.com/) to help troubleshoot regex errors
 - If no filenames match the `Search Pattern` then the preview listing will display `No files matched search criteria!`
