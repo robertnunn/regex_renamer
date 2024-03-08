@@ -2,5 +2,29 @@
     "imgur albums": {
         "search": "^(\\d{1,}) - .*(\\..{3,})$",
         "replace": "$1$2"
+    },
+    "Append to filename": {
+        "search": "(.*)",
+        "replace": "$1"
+    },
+    "pad single digits": {
+        "search": "^(\\d{1})\\.<ext>",
+        "replace": "0$1.$2"
+    },
+    "pad double digits": {
+        "search": "^(\\d{2})\\.<ext>",
+        "replace": "0$1.$2"
+    },
+    "unpad single digits": {
+        "search": "^0(\\d{1})\\.<ext>",
+        "replace": "$1.$2"
+    },
+    "change extensions": {
+        "search": "(.*)\\.<ext>",
+        "replace": "$1."
+    },
+    "temp": {
+        "search": ".*_(\\d{1,2})\\.<ext>",
+        "replace": "$1.$2"
     }
 }
